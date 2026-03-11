@@ -7,163 +7,313 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0d0d1a 100%);
             min-height: 100vh;
-            color: #fff;
+            color: #e4e4e7;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         
         /* Header */
         header {
             text-align: center;
-            padding: 40px 0;
+            padding: 50px 0 30px;
+            background: linear-gradient(180deg, rgba(79,70,229,0.1) 0%, transparent 100%);
+            margin-bottom: 30px;
         }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        .subtitle { color: #888; font-size: 1rem; }
+        h1 { 
+            font-size: 2.8rem; 
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle { 
+            color: #9ca3af; 
+            font-size: 1.1rem;
+        }
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .header-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
         
         /* Filters */
         .filters {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 30px;
+        }
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
         }
         .filter-group {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
             align-items: center;
+            gap: 10px;
         }
-        .filter-group label { font-weight: 600; color: #aaa; }
+        .filter-group label { 
+            font-weight: 500; 
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
         select, input {
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #1e1e3f;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             color: #fff;
             font-size: 14px;
+            min-width: 150px;
+            transition: all 0.2s;
         }
-        select:focus, input:focus { outline: 2px solid #4f46e5; }
+        select:hover, input:hover { border-color: rgba(79,70,229,0.5); }
+        select:focus, input:focus { 
+            outline: none; 
+            border-color: #4f46e5;
+            background: rgba(79,70,229,0.1);
+        }
         
-        /* Stats */
-        .stats {
+        /* Stats Bar */
+        .stats-bar {
             display: flex;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
-            color: #888;
+            padding: 0 5px;
         }
-        .stat { padding: 5px 10px; background: rgba(255,255,255,0.05); border-radius: 6px; }
+        .stats-left {
+            color: #9ca3af;
+            font-size: 0.95rem;
+        }
+        .stats-left strong { color: #fff; }
         
         /* Paper Grid */
         .papers-grid {
             display: grid;
-            gap: 20px;
+            gap: 24px;
         }
         
         /* Paper Card */
         .paper-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.3s ease;
         }
         .paper-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            border-color: #4f46e5;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            border-color: rgba(79,70,229,0.3);
+            background: linear-gradient(135deg, rgba(79,70,229,0.08) 0%, rgba(255,255,255,0.02) 100%);
+        }
+        
+        .paper-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 12px;
         }
         
         .paper-title {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: #fff;
-            margin-bottom: 10px;
-            line-height: 1.4;
+            line-height: 1.5;
+            flex: 1;
         }
         .paper-title a {
             color: inherit;
             text-decoration: none;
+            transition: color 0.2s;
         }
-        .paper-title a:hover { color: #4f46e5; }
+        .paper-title a:hover { 
+            color: #818cf8; 
+        }
+        
+        .paper-id {
+            font-size: 0.75rem;
+            color: #6b7280;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+        }
         
         .paper-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 16px;
             font-size: 0.9rem;
-            color: #888;
+            color: #9ca3af;
         }
-        .paper-meta span { display: flex; align-items: center; gap: 5px; }
+        .paper-meta .authors {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 500px;
+        }
+        
+        .paper-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
         
         .tag {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
-            background: #4f46e5;
+            font-weight: 500;
+            background: rgba(79,70,229,0.2);
+            color: #a5b4fc;
         }
-        .tag.cs-AI { background: #10b981; }
-        .tag.cs-LG { background: #3b82f6; }
-        .tag.cs-CL { background: #8b5cf6; }
-        .tag.cs-CV { background: #f59e0b; }
-        .tag.eess-AS { background: #ec4899; }
-        .tag.cs-SD { background: #06b6d4; }
-        .tag.cs-RO { background: #f97316; }
+        .tag.cs-AI { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+        .tag.cs-LG { background: rgba(59,130,246,0.2); color: #93c5fd; }
+        .tag.cs-CL { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+        .tag.cs-CV { background: rgba(245,158,11,0.2); color: #fcd34d; }
+        .tag.eess-AS { background: rgba(236,72,153,0.2); color: #f9a8d4; }
+        .tag.cs-SD { background: rgba(6,182,212,0.2); color: #67e8f9; }
+        .tag.cs-RO { background: rgba(249,115,22,0.2); color: #fdba74; }
         
+        /* Abstract Section */
         .paper-abstract {
-            color: #aaa;
+            position: relative;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .paper-abstract-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        .paper-abstract p {
+            color: #d1d5db;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        /* Summary Section */
+        .paper-summary {
+            background: rgba(79,70,229,0.05);
+            border-left: 3px solid #4f46e5;
+            border-radius: 0 12px 12px 0;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .paper-summary-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #818cf8;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .paper-summary p {
+            color: #c7d2fe;
             font-size: 0.9rem;
             line-height: 1.6;
-            max-height: 100px;
-            overflow: hidden;
-            position: relative;
-        }
-        .paper-abstract::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: linear-gradient(transparent, rgba(26,26,46,1));
         }
         
         .paper-links {
-            margin-top: 15px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
         .paper-links a {
-            padding: 8px 16px;
-            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 10px;
             text-decoration: none;
             font-size: 0.85rem;
-            transition: background 0.2s;
+            font-weight: 500;
+            transition: all 0.2s;
         }
         .paper-links .pdf {
-            background: #dc2626;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: #fff;
         }
-        .paper-links .pdf:hover { background: #b91c1c; }
+        .paper-links .pdf:hover { 
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(220,38,38,0.3);
+        }
+        .paper-links .arxiv {
+            background: rgba(255,255,255,0.1);
+            color: #e4e4e7;
+        }
+        .paper-links .arxiv:hover { background: rgba(255,255,255,0.15); }
         
         /* Loading */
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #888;
+            padding: 60px;
+            color: #6b7280;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(79,70,229,0.2);
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Empty State */
+        .empty {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
         }
         
         /* Date Badge */
         .date-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            background: rgba(79, 70, 229, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(79,70,229,0.15);
             border-radius: 20px;
             font-size: 0.85rem;
             color: #a5b4fc;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .filter-row { flex-direction: column; align-items: stretch; }
+            select, input { width: 100%; }
+            .paper-header { flex-direction: column; }
         }
     </style>
 </head>
@@ -171,48 +321,71 @@
     <div class="container">
         <header>
             <h1>📄 AI Papers Daily</h1>
-            <p class="subtitle">每日 AI 领域最新论文精选</p>
+            <p class="subtitle">每日 AI 领域最新论文精选 · Powered by arXiv</p>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <span>📚</span>
+                    <span id="paperCount">-</span> 篇论文
+                </div>
+                <div class="header-stat">
+                    <span>🔄</span>
+                    <span id="updateTime">-</span>
+                </div>
+            </div>
         </header>
         
         <div class="filters">
-            <div class="filter-group">
-                <label>领域:</label>
-                <select id="categoryFilter">
-                    <option value="">全部领域</option>
-                    <option value="cs.AI">cs.AI (人工智能)</option>
-                    <option value="cs.LG">cs.LG (机器学习)</option>
-                    <option value="cs.CL">cs.CL (计算语言学)</option>
-                    <option value="cs.CV">cs.CV (计算机视觉)</option>
-                    <option value="cs.RO">cs.RO (机器人)</option>
-                    <option value="eess.AS">eess.AS (语音)</option>
-                    <option value="cs.SD">cs.SD (语音处理)</option>
-                </select>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>🏷️ 领域</label>
+                    <select id="categoryFilter">
+                        <option value="">全部领域</option>
+                        <option value="cs.AI">cs.AI 人工智能</option>
+                        <option value="cs.LG">cs.LG 机器学习</option>
+                        <option value="cs.CL">cs.CL 计算语言学</option>
+                        <option value="cs.CV">cs.CV 计算机视觉</option>
+                        <option value="cs.RO">cs.RO 机器人</option>
+                        <option value="eess.AS">eess.AS 语音处理</option>
+                        <option value="cs.SD">cs.SD 语音信号</option>
+                    </select>
+                </div>
                 
-                <label>作者:</label>
-                <input type="text" id="authorFilter" placeholder="搜索作者...">
+                <div class="filter-group">
+                    <label>👤 作者</label>
+                    <input type="text" id="authorFilter" placeholder="搜索作者...">
+                </div>
                 
-                <label>日期:</label>
-                <input type="date" id="dateFilter">
+                <div class="filter-group">
+                    <label>📅 日期</label>
+                    <input type="date" id="dateFilter">
+                </div>
                 
-                <label>关键词:</label>
-                <input type="text" id="keywordFilter" placeholder="搜索标题/摘要...">
+                <div class="filter-group">
+                    <label>🔍 关键词</label>
+                    <input type="text" id="keywordFilter" placeholder="搜索标题/摘要...">
+                </div>
             </div>
         </div>
         
-        <div class="stats">
-            <span class="stat">📚 共 <strong id="totalCount">0</strong> 篇论文</span>
-            <span class="stat">📅 更新日期: <strong id="updateDate">-</strong></span>
+        <div class="stats-bar">
+            <div class="stats-left">
+                显示 <strong id="showingCount">0</strong> 篇论文
+            </div>
+            <div class="date-badge">
+                📅 <span id="dateDisplay">-</span>
+            </div>
         </div>
         
         <div id="papersGrid" class="papers-grid">
-            <div class="loading">加载中...</div>
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                加载论文中...
+            </div>
         </div>
     </div>
 
     <script>
-        // 论文数据将从 GitHub JSON 文件加载
         const DATA_URL = 'data/papers.json';
-        
         let allPapers = [];
         
         async function loadPapers() {
@@ -220,47 +393,79 @@
                 const response = await fetch(DATA_URL);
                 const data = await response.json();
                 allPapers = data.papers || [];
-                document.getElementById('updateDate').textContent = data.updated || '-';
-                document.getElementById('totalCount').textContent = allPapers.length;
+                
+                // Update stats
+                document.getElementById('paperCount').textContent = data.count || allPapers.length;
+                document.getElementById('updateTime').textContent = data.updated || '-';
+                document.getElementById('dateDisplay').textContent = data.updated || '-';
+                
                 renderPapers(allPapers);
             } catch (error) {
                 document.getElementById('papersGrid').innerHTML = 
-                    '<div class="loading">加载失败: ' + error.message + '</div>';
+                    `<div class="empty">❌ 加载失败: ${error.message}</div>`;
             }
         }
         
         function renderPapers(papers) {
             const grid = document.getElementById('papersGrid');
+            document.getElementById('showingCount').textContent = papers.length;
             
             if (papers.length === 0) {
-                grid.innerHTML = '<div class="loading">没有找到匹配的论文</div>';
+                grid.innerHTML = '<div class="empty">🔍 没有找到匹配的论文</div>';
                 return;
             }
             
-            grid.innerHTML = papers.map((paper, i) => {
+            grid.innerHTML = papers.map(paper => {
                 const categories = paper.categories || [];
                 const tagsHtml = categories.map(cat => 
                     `<span class="tag ${cat.replace('.','-')}">${cat}</span>`
                 ).join('');
                 
-                const authors = (paper.authors || []).slice(0, 4).join(', ');
-                const date = paper.published ? paper.published.substring(0, 10) : '';
+                const authors = (paper.authors || []).slice(0, 5).join(', ');
+                const date = paper.published ? paper.published : '';
+                const paperId = paper.id || '';
+                
+                // Abstract (full)
+                const abstract = paper.abstract || '';
+                
+                // Summary (shortened)
+                const summary = paper.summary || (abstract ? abstract.substring(0, 400) + '...' : '');
                 
                 return `
                     <div class="paper-card">
-                        <h2 class="paper-title">
-                            <a href="${paper.url}" target="_blank">${paper.title}</a>
-                        </h2>
+                        <div class="paper-header">
+                            <h2 class="paper-title">
+                                <a href="${paper.url || '#'}" target="_blank">${paper.title || 'Untitled'}</a>
+                            </h2>
+                            <span class="paper-id">${paperId}</span>
+                        </div>
+                        
                         <div class="paper-meta">
-                            <span>👤 ${authors}${((paper.authors||[]).length > 4) ? '...' : ''}</span>
+                            <span class="authors">👤 ${authors}${((paper.authors||[]).length > 5) ? '...' : ''}</span>
                             <span>📅 ${date}</span>
                         </div>
-                        <div class="paper-meta">
+                        
+                        <div class="paper-tags">
                             ${tagsHtml}
                         </div>
-                        <p class="paper-abstract">${paper.abstract || ''}</p>
+                        
+                        ${abstract ? `
+                        <div class="paper-abstract">
+                            <div class="paper-abstract-label">📝 摘要 Abstract</div>
+                            <p>${abstract}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${summary && summary !== abstract ? `
+                        <div class="paper-summary">
+                            <div class="paper-summary-label">⚡ 概要 Summary</div>
+                            <p>${summary}</p>
+                        </div>
+                        ` : ''}
+                        
                         <div class="paper-links">
-                            <a href="${paper.pdf}" class="pdf" target="_blank">📥 PDF</a>
+                            <a href="${paper.pdf || '#'}" class="pdf" target="_blank">📥 PDF</a>
+                            <a href="${paper.url || '#'}" class="arxiv" target="_blank">🌐 arXiv</a>
                         </div>
                     </div>
                 `;

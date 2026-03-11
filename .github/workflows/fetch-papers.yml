@@ -1,0 +1,73 @@
+name: Daily Paper Fetcher
+
+on:
+  schedule:
+    # 每天 UTC 0:00 (北京时间 8:00) 自动运行
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 支持手动触发
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch-papers:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Fetch papers from arXiv
+        run: |
+          python3 << 'EOF'
+import urllib.request
+import xml.etree.ElementTree as ET
+import json
+from datetime import datetime
+
+domains = ['cs.AI', 'cs.LG', 'cs.CL', 'cs.CV', 'eess.AS', 'cs.SD']
+query = '+OR+'.join([f'cat:{d}' for d in domains])
+
+url = f'http://export.arxiv.org/api/query?search_query={query}&sortBy=submittedDate&sortOrder=descending&max_results=20'
+response = urllib.request.urlopen(url, timeout=30)
+xml = response.read().decode()
+root = ET.fromstring(xml)
+
+papers = []
+for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
+    paper = {
+        'id': entry.find('{http://www.w3.org/2005/Atom}id').text.split('/')[-1],
+        'title': entry.find('{http://www.w3.org/2005/Atom}title').text.strip(),
+        'authors': [a.find('{http://www.w3.org/2005/Atom}name').text for a in entry.findall('{http://www.w3.org/2005/Atom}author')],
+        'abstract': entry.find('{http://www.w3.org/2005/Atom}summary').text.strip(),
+        'summary': entry.find('{http://www.w3.org/2005/Atom}summary').text.strip()[:500],  # 简短摘要
+        'categories': [c.attrib.get('term', '') for c in entry.findall('{http://www.w3.org/2005/Atom}category')],
+        'published': entry.find('{http://www.w3.org/2005/Atom}published').text[:10],
+        'url': entry.find('{http://www.w3.org/2005/Atom}id').text,
+        'pdf': entry.find('{http://www.w3.org/2005/Atom}link[@title="pdf"]').attrib['href']
+    }
+    papers.append(paper)
+
+data = {
+    'updated': datetime.now().strftime('%Y-%m-%d'),
+    'updated_at': datetime.now().isoformat(),
+    'count': len(papers),
+    'papers': papers
+}
+
+with open('data/papers.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+print(f'✅ Fetched {len(papers)} papers')
+EOF
+          
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 Auto-update: Daily papers $(date +%Y-%m-%d)"
+          file_pattern: "data/papers.json"
