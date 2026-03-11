@@ -538,17 +538,29 @@
         let selectedPaper = null;
         let currentLang = 'en';
         
-        // Mock LLM summaries (in real app, would call LLM API)
-        const mockSummaries = {
-            en: {
-                summary: "This paper presents a novel approach to addressing key challenges in the field. The authors propose a new methodology that combines deep learning with traditional techniques, achieving state-of-the-art results on multiple benchmarks.",
-                method: "### Problem\nThe paper tackles the challenge of [specific problem] in modern AI systems.\n\n### Proposed Method\nThe authors introduce [method name], which consists of:\n1. A novel architecture design\n2. An innovative training strategy\n3. A new loss function tailored for the task\n\n### Key Contributions\n- Novel approach achieving X% improvement\n- Theoretical analysis proving convergence\n- Extensive experiments on benchmark datasets"
-            },
-            zh: {
-                summary: "本文提出了一种解决当前领域关键问题的新方法。作者提出了一种将深度学习与传统技术相结合的新方法，在多个基准测试中取得了最先进的结果。",
-                method: "### 问题\n本文解决了现代AI系统中[具体问题]的挑战。\n\n### 提出的方法\n作者介绍了[方法名称]，包括：\n1. 创新的架构设计\n2. 创新的训练策略\n3. 针对任务定制的新损失函数\n\n### 主要贡献\n- 实现了X%提升的新方法\n- 收敛性的理论分析\n- 在基准数据集上的广泛实验"
+        // Mock data - will be replaced by actual summary from JSON
+        let paperSummary = null;
+        let paperMethod = null;
+        
+        function getSummaryForPaper(paper, lang) {
+            if (paper.summary && paper.summary[lang]) {
+                return paper.summary[lang];
             }
-        };
+            if (paper.summary && paper.summary['en']) {
+                return paper.summary['en'];
+            }
+            return paper.abstract?.substring(0, 400) + '...';
+        }
+        
+        function getMethodForPaper(paper, lang) {
+            if (paper.method_overview && paper.method_overview[lang]) {
+                return paper.method_overview[lang];
+            }
+            if (paper.method_overview && paper.method_overview['en']) {
+                return paper.method_overview['en'];
+            }
+            return 'Click PDF to read full paper for method details.';
+        }
         
         async function loadPapers() {
             try {
@@ -605,12 +617,9 @@
             const detailContent = document.getElementById('detailContent');
             const p = selectedPaper;
             
-            // Get summary based on language
-            const summary = mockSummaries[currentLang]?.summary || mockSummaries.en.summary;
-            const method = mockSummaries[currentLang]?.method || mockSummaries.en.method;
-            
-            // Check if we have real summary from data, otherwise use mock
-            const actualSummary = p.summary || p.abstract?.substring(0, 400) + '...';
+            // Get summary and method from paper data
+            const summary = getSummaryForPaper(p, currentLang);
+            const method = getMethodForPaper(p, currentLang);
             
             detailContent.innerHTML = `
                 <div class="detail-section">
@@ -630,7 +639,7 @@
                 
                 <div class="detail-section llm-summary ${currentLang === 'zh' ? 'llm-summary-zh' : ''}">
                     <div class="section-title summary">
-                        🤖 ${currentLang === 'zh' ? 'LLM智能总结' : 'LLM Summary'}
+                        🤖 ${currentLang === 'zh' ? '智能总结' : 'Summary'}
                     </div>
                     <p class="summary-text">${summary}</p>
                 </div>
@@ -639,7 +648,7 @@
                     <div class="section-title method">
                         💡 ${currentLang === 'zh' ? '方法概述' : 'Method Overview'}
                     </div>
-                    <div class="method-text">${method.replace(/\n/g, '<br>').replace(/### /g, '<h4>').replace(/<br>([^<])/g, '<br>$1')}</div>
+                    <div class="method-text">${method.replace(/### /g, '<h4>').replace(/\n/g, '<br>').replace(/<h4>/g, '<h4>').replace(/<br>/g, '<br>')}</div>
                 </div>
                 
                 <div class="detail-section">

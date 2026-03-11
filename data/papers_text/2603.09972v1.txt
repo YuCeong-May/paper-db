@@ -1,0 +1,423 @@
+
+--- Page 1 ---
+Published as a conference paper at ICLR 2026
+FROMDATASTATISTICS TOFEATUREGEOMETRY:
+HOWCORRELATIONSSHAPESUPERPOSITION
+Lucas Prieto , Edward Stevinson , Melih Barsbey , Tolga Birdal ∗, Pedro A.M. Mediano∗
+Imperial College London
+ABSTRACT
+A central idea in mechanistic interpretability is that neural networks represent more
+features than they have dimensions, arranging them in superposition to form an
+over-complete basis. This framing has been influential, motivating dictionary learn-
+ing approaches such as sparse autoencoders. However, superposition has mostly
+been studied in idealized settings where features are sparse and uncorrelated. In
+these settings, superposition is typically understood as introducing interference
+that must be minimized geometrically and filtered out by non-linearities such
+as ReLUs, yielding local structures like regular polytopes. We show that this
+account is incomplete for realistic data by introducing Bag-of-Words Superposi-
+tion (BOWS), a controlled setting to encode binary bag-of-words representations
+of internet text in superposition. Using BOWS, we find that when features are
+correlated, interference can be constructive rather than just noise to be filtered
+out. This is achieved by arranging features according to their co-activation pat-
+terns, making interference between active features constructive, while still using
+ReLUs to avoid false positives. We show that this kind of arrangement is more
+prevalent in models trained with weight decay and na
+--- Page 2 ---
+Published as a conference paper at ICLR 2026
+Binary BoW (size d)
+BOWS
+Latent
+representation
+Internet text
+W
+ReLU
+W
+(Size m)
+T
+Non-linear 
+Superposition
+Example:
+Antipodal pairs
+Feature A
+Feature B
+ReLU filters out
+interference 
+between A and B
+Conditions:
+[Elhage et. al. 2022]
+Linear Superposition
+Example:
+Months of the year
+(cyclic structure)
+Months constructively
+interfere to help recon-
+struct seasonal words.
+Conditions
+- Correlated features 
+- Vocab >> latent_dim
+- Weight decay
+(This work)
+- High sparsity 
+(A and B rarely co-occur)
+- Uncorrelated features
+Figure 1:BOWS, our new framework to study superposition in realistic data(left) extends our
+current understanding of superposition (middle) by showing that interference can be constructive,
+allowing words like ‘December’ to contribute to the reconstruction of correlated words like ‘Christmas’
+giving rise to a circular arrangement for the months of the year (right).
+enabling efficient reconstruction in terms of weight norm and rank rather than always requiring
+non-linear filtering. ReLU-based filtering remains important for suppressing harmful interference,
+but correlated features can also be arranged so that interference reinforces signal.
+To study this in a controlled setting, we introduce Bag-of-Words Superposition (BOWS), a framework
+in which an autoencoder is trained to encode binary bag-of-words representations of internet text
+in superposition. BOWS provides realistic feature correlations together with known ground
+--- Page 3 ---
+Published as a conference paper at ICLR 2026
+2. (Recoverability)There exists a decoder ψ:R m →R d such that R2
+i (W, ψ)≥1−ε for all
+i∈F.
+Definition 2(Linear Superposition).Let F be a set of features in superposition. A feature i∈F is in
+linear superpositionif there exists a linear decoderψ lin :R m →R d such thatR 2
+i (W, ψlin)≥1−ε.
+Definition 3(Non-linear Superposition).A featurei∈Fis innon-linear superpositionif:
+1. There exists a decoderψwithR 2
+i (W, ψ)≥1−ε, and
+2. For all linear decodersψ lin, we haveR 2
+i (W, ψlin)<1−ε.
+Superposition in deep learning models. The definitions above apply to any featuresf. However,
+superposition becomes central to mechanistic interpretability under thelinear representation hy-
+pothesis(LRH). The LRH reflects the empirical finding that high-level concepts such as language
+(Gurnee et al., 2023), entity attributes, or specific landmarks (Templeton et al., 2024) are often linearly
+represented in model activations. Concretely, let Dx be a distribution over data samples x∈ X (e.g.,
+an image or text) and let ρ1, . . . , ρd :X →R be interpretable properties (e.g., “is written in French”,
+“contains a dog”). These induce a vector of featuresf(x) = [ρ 1(x), . . . , ρd(x)]⊤.
+Definition 4(Linear Representation Hypothesis).We say that a hidden representation h satisfies
+the linear representation hypothesiswith respect to {ρj}d
+j=1 if there exist directions w1, . . . ,wd ∈
+Rm such that:
+h(x)≈
+dX
+j=1
+ρj(x)wj forx∼ D x.(2)
+A model that linearly represents 
+--- Page 4 ---
+Published as a conference paper at ICLR 2026
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+Data Cov.
+ m=2
+ m=3
+ m=4
+ m=6
+ m=7
+ m=8
+ m=10
+ m=11
+ m=12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+-1.0
+-0.5
+0.0
+0.5
+1.0
+-1.0
+-0.5
+0.0
+0.5
+1.0
+LinearReLU
+Figure 2:Autoencoding synthetic correlated features shows two ways of handling interference.
+Weight inner products ( W⊤W) at convergence for AEs encoding d= 12 features with cyclic
+covariance, varying latent size m.Top (Linear AE):captures the top- m principal components
+projecting all 12 features on the circular structure induced by the data covariance.Bottom (ReLU
+AE):Matches linear AE for small m, but forms antipodal pairs for m∈ {6, ...,10} using the ReLU
+to filter interference.
+autoencoders can exploit interference constructively, arranging features so that shared variance
+supports reconstruction rather than treating interference as noise to be filtered out. We characterize
+when each mechanism is favored, and how the two can coexist in the same model.
+3.1 SUPERPOSITION AND INTERFERENCE
+For tied-weight AEs with weight matrix W∈R m×d, columns {wi}d
+i=1, and activation function σ,
+the reconstruction of featuref i decomposes into a signal and aninterferenceterm:
+ˆfi =σ
+
+∥wi∥2fi
+| {z }
+Signal
++
+X
+j̸=i
+
+--- Page 5 ---
+Published as a conference paper at ICLR 2026
+(a)
+m= 200
+wd= 0
+ (b)
+m= 400
+wd= 0
+ (c)
+m= 800
+wd= 0
+ (d)
+m= 800
+wd= 4
+Other
+Verbs
+Proper names
+People, Society & Roles
+Science, Nature & Environment
+Time, Numbers & Measurement
+Transportation & Travel
+Geography & Places
+Politics & Government
+Film, TV & Media
+Music & Audio
+Sports & Competition
+Military & Conflict (e)
+Semantic
+categories
+Figure 3:Linear superposition appears in ReLU AEs which have small latent sizes (a) or are
+trained with weight decay (d), giving rise to semantic clusters.UMAP projections of word
+embeddings from AEs of different latent dimensions (m) and weight decay values (wd). Points are
+colored by semantic category (e).
+(Deerwester et al., 1990; Blei et al., 2003; Udell & Townsend, 2019), making Σ approximately
+low-rank. In this regime, interference behaves as signal contaminated by a residual εi corresponding
+to variance outside the top-m subspace, with ∥ε∥2 =P
+k>m λk(Σ)≥min rank( bΣ)≤m ∥Σ− bΣ∥F
+(Eckart & Young, 1936). Thus, as the spectrum of Σ becomes more concentrated, the residual
+becomes smaller and constructive interference becomes increasingly effective.
+When do non-linear models exploit constructive interference?For models trained on real data
+with weight decay, the interference-filtering and constructive-interference solutions have different
+norm requirements. In the standard sparse-feature setting, recovering each feature while relying on
+a ReLU to suppress interference requires feature directions wi
+--- Page 6 ---
+Published as a conference paper at ICLR 2026
+Jan.Feb.Mar.Apr.May.Jun.Jul.Aug.Sep.Oct.Nov.Dec.
+Jan.
+Feb.
+Mar.
+Apr.
+May.
+Jun.
+Jul.
+Aug.
+Sep.
+Oct.
+Nov.
+Dec.
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+0.30
+Correlation
+(a) Data correlations
+Jan
+Feb
+Mar
+Apr May
+Jun
+Jul
+Aug
+Sep
+Oct
+Nov
+Dec (b) PCA of the data
+Jan
+Feb
+Mar
+Apr
+MayJunJul
+Aug
+Sep
+Oct
+Nov Dec
+snow
+Christmas
+summer
+spring
+Easterleaves
+Halloween (c) PCA ofW
+'Christmas' +
+correlated context
+all months
+without 'Christmas'
+0.4
+0.2
+0.0
+0.2
+0.4
+0.6
+Pre-activation
+Christmas
+December
+gift
+Day
+snow
+July
+January
+December
+ReLU
+threshold
+bias = -0.309
+positive
+interference
+negative
+interference
+}  = 0.034
+Interference
+cancels out
+Constructive
+interference (d) ‘Christmas’ example
+Figure 4:Circular representation of months arises from data covariance via PCA. (a)Empirical
+correlation matrix of month words in the WikiText-103 BOWS dataset, showing cyclic correlations.
+(b)PCA applied directly to the 12 month dimensions of the BOWS data vectors, projected onto the
+top 2 PCs, reveals a circle.(c)PCA applied to the 12 learned encoder features ( W columns) for
+months from a ReLU AE trained on WikiText-BOWS (V= 10k , m= 1000 ), projected onto their top
+2 PCs, also recovers the circular structure. Seasonal words such as ‘Christmas’ and ‘summer’ align
+with the months with which they co-occur, allowing ‘December’ to contribute to the reconstruction
+of ‘Christmas’ while interference on ‘Christmas’ cancels out if all months are present(d).
+in anti-correlated p

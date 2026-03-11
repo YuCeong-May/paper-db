@@ -1,10 +1,9 @@
-name: Daily Paper Fetcher
+name: Daily Paper Fetcher with Text Extraction
 
 on:
   schedule:
-    # 每天 UTC 0:00 (北京时间 8:00) 自动运行
-    - cron: '0 0 * * *'
-  workflow_dispatch:  # 支持手动触发
+    - cron: '0 0 * * *'  # 每天 UTC 0:00
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -22,37 +21,127 @@ jobs:
         with:
           python-version: '3.11'
           
-      - name: Fetch papers from arXiv
+      - name: Install dependencies
+        run: |
+          pip install requests pypdf2 python-dotenv
+          
+      - name: Fetch papers and extract text
         run: |
           python3 << 'EOF'
 import urllib.request
 import xml.etree.ElementTree as ET
 import json
+import os
+import re
 from datetime import datetime
+from pathlib import Path
 
+# Configuration
 domains = ['cs.AI', 'cs.LG', 'cs.CL', 'cs.CV', 'eess.AS', 'cs.SD']
-query = '+OR+'.join([f'cat:{d}' for d in domains])
+MAX_PAPERS = 15
+PAPER_DIR = Path('data/papers_text')
 
-url = f'http://export.arxiv.org/api/query?search_query={query}&sortBy=submittedDate&sortOrder=descending&max_results=20'
+# Create directory
+PAPER_DIR.mkdir(parents=True, exist_ok=True)
+
+# Fetch from arXiv
+query = '+OR+'.join([f'cat:{d}' for d in domains])
+url = f'http://export.arxiv.org/api/query?search_query={query}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_PAPERS}'
 response = urllib.request.urlopen(url, timeout=30)
 xml = response.read().decode()
 root = ET.fromstring(xml)
 
 papers = []
-for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
-    paper = {
-        'id': entry.find('{http://www.w3.org/2005/Atom}id').text.split('/')[-1],
-        'title': entry.find('{http://www.w3.org/2005/Atom}title').text.strip(),
-        'authors': [a.find('{http://www.w3.org/2005/Atom}name').text for a in entry.findall('{http://www.w3.org/2005/Atom}author')],
-        'abstract': entry.find('{http://www.w3.org/2005/Atom}summary').text.strip(),
-        'summary': entry.find('{http://www.w3.org/2005/Atom}summary').text.strip()[:500],  # 简短摘要
-        'categories': [c.attrib.get('term', '') for c in entry.findall('{http://www.w3.org/2005/Atom}category')],
-        'published': entry.find('{http://www.w3.org/2005/Atom}published').text[:10],
-        'url': entry.find('{http://www.w3.org/2005/Atom}id').text,
-        'pdf': entry.find('{http://www.w3.org/2005/Atom}link[@title="pdf"]').attrib['href']
-    }
-    papers.append(paper)
+paper_texts = []
 
+for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
+    paper_id = entry.find('{http://www.w3.org/2005/Atom}id').text.split('/')[-1]
+    title = entry.find('{http://www.w3.org/2005/Atom}title').text.strip()
+    abstract = entry.find('{http://www.w3.org/2005/Atom}summary').text.strip()
+    authors = [a.find('{http://www.w3.org/2005/Atom}name').text for a in entry.findall('{http://www.w3.org/2005/Atom}author')]
+    categories = [c.attrib.get('term', '') for c in entry.findall('{http://www.w3.org/2005/Atom}category')]
+    published = entry.find('{http://www.w3.org/2005/Atom}published').text[:10]
+    pdf_url = entry.find('{http://www.w3.org/2005/Atom}link[@title="pdf"]').attrib['href']
+    
+    paper_data = {
+        'id': paper_id,
+        'title': title,
+        'authors': authors,
+        'abstract': abstract,
+        'categories': categories,
+        'published': published,
+        'url': entry.find('{http://www.w3.org/2005/Atom}id').text,
+        'pdf': pdf_url,
+        'summary': None,
+        'method_overview': None
+    }
+    
+    # Save paper metadata
+    papers.append(paper_data)
+    
+    # Create text file for each paper
+    text_content = f"""# Paper: {paper_id}
+# Title: {title}
+# Authors: {', '.join(authors)}
+# Categories: {', '.join(categories)}
+# Published: {published}
+# URL: {entry.find('{http://www.w3.org/2005/Atom}id').text}
+
+## Abstract
+{abstract}
+
+## Full Text
+(Please download PDF from: {pdf_url})
+"""
+    
+    # Try to download and extract PDF text
+    try:
+        import ssl
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        
+        pdf_req = urllib.request.Request(pdf_url, headers={'User-Agent': 'Mozilla/5.0'})
+        pdf_response = urllib.request.urlopen(pdf_req, timeout=30, context=ctx)
+        pdf_data = pdf_response.read()
+        
+        pdf_path = PAPER_DIR / f"{paper_id}.pdf"
+        with open(pdf_path, 'wb') as f:
+            f.write(pdf_data)
+        
+        # Extract text using PyPDF2
+        try:
+            import PyPDF2
+            with open(pdf_path, 'rb') as f:
+                reader = PyPDF2.PdfReader(f)
+                full_text = ""
+                for page in reader.pages[:8]:  # First 8 pages usually contain main content
+                    text = page.extract_text()
+                    if text:
+                        full_text += text + "\n"
+                
+                # Save extracted text
+                text_file = PAPER_DIR / f"{paper_id}.txt"
+                with open(text_file, 'w', encoding='utf-8') as tf:
+                    tf.write(f"""# Paper: {paper_id}
+# Title: {title}
+# Authors: {', '.join(authors)}
+# Published: {published}
+
+## Abstract
+{abstract}
+
+## Extracted Content (first ~4000 chars)
+{full_text[:4000]}
+""")
+                print(f"✓ Extracted text for {paper_id}")
+        except Exception as e:
+            print(f"⚠ Could not extract text for {paper_id}: {e}")
+            
+    except Exception as e:
+        print(f"⚠ Could not download PDF for {paper_id}: {e}")
+
+# Save papers.json
 data = {
     'updated': datetime.now().strftime('%Y-%m-%d'),
     'updated_at': datetime.now().isoformat(),
@@ -63,11 +152,19 @@ data = {
 with open('data/papers.json', 'w', encoding='utf-8') as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 
-print(f'✅ Fetched {len(papers)} papers')
+print(f"✅ Fetched {len(papers)} papers")
+print(f"📁 Text files saved to: {PAPER_DIR}")
 EOF
+
+      - name: List extracted files
+        run: |
+          echo "=== Papers with text files ==="
+          ls -la data/papers_text/*.txt 2>/dev/null | head -20 || echo "No text files yet"
           
       - name: Commit and push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🤖 Auto-update: Daily papers $(date +%Y-%m-%d)"
-          file_pattern: "data/papers.json"
+          commit_message: "🤖 Auto-update: Daily papers with text $(date +%Y-%m-%d)"
+          file_pattern: |
+            data/papers.json
+            data/papers_text/*.txt

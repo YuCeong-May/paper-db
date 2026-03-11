@@ -1,0 +1,191 @@
+
+--- Page 1 ---
+Task Aware Modulation using Representation Learning for Upsaling of Terrestrial
+Carbon Fluxes
+Aleksei Rozanov1*, Arvind Renganathan 1*, Vipin Kumar1
+1University of Minnesota, Twin Cities
+{rozan012, renga016, kumar001}@umn.edu
+Abstract
+Accurately upscaling terrestrial carbon fluxes is central to
+estimating the global carbon budget, yet remains challeng-
+ing due to the sparse and regionally biased distribution of
+ground measurements. Existing data-driven upscaling prod-
+ucts often fail to generalize beyond observed domains, lead-
+ing to systematic regional biases and high predictive un-
+certainty. We introduce Task-Aware Modulation with Rep-
+resentation Learning (TAM-RL), a framework that cou-
+ples spatio-temporal representation learning with knowledge-
+guided encoder-decoder architecture and loss function de-
+rived from the carbon balance equation. Across 150+ flux
+tower sites representing diverse biomes and climate regimes,
+TAM-RL improves predictive performance relative to exist-
+ing state-of-the-art datasets, reducing RMSE by 8–9.6% and
+increasing explained variance (R2) from 19.4% to 43.8%, de-
+pending on the target flux. These results demonstrate that in-
+tegrating physically grounded constraints with adaptive rep-
+resentation learning can substantially enhance the robustness
+and transferability of global carbon flux estimates.
+Introduction
+Accurately quantifying the exchange of carbon dioxide be-
+tween land and atmosphere is essential for understanding
+the global carbon 
+--- Page 2 ---
+Figure 1:Spatial distribution of the sites used in the current study
+where color represents climate type according to K ¨oppen–Geiger
+climate classification (Cui et al. 2021). The sites are derived from
+the FLUXCOM, AmeriFlux, ICOS, and JapanFlux networks.
+formance across several environmental modeling tasks. Our
+work makes the following novel contributions:
+• We extend TAM-RL to the domain generalization setting,
+evaluating its ability to perform global carbon flux up-
+scaling without site-specific fine-tuning, e.g. zero-shot;
+• We design a knowledge-guided loss function incorpo-
+rating the carbon balance equation (N EE=GP P−
+RECO), quality-control weighting, and class balancing
+across ecosystem types;
+• We demonstrate significant performance gains over cur-
+rent state-of-the-art analog, achieving an average RMSE
+reduction of 8–9.6% and anR 2 increase of 19.4–43.8%
+across all ecosystem types.
+Overall, our results show that TAM-RL effectively addresses
+the domain generalization challenge and outperforms classi-
+cal tree-based models that depend on extensive manual fea-
+ture engineering.
+Related Works
+Knowledge-Guided ML
+Despite the widespread use of process-based models in
+Earth system science, their performance is often limited by
+structural biases, incomplete process representations, and
+high computational demands. As an alternative, data-driven
+machine learning (ML) approaches have gained substan-
+tial traction over the past decade, offering high efficiency
+during inferenc
+--- Page 3 ---
+Figure 3:Barplots illustrating mean RMSE of CT-LSTM, TALMSTL, TAM-RL, XGBoost and FLUXCOM-X-BASE aggregated by IGBP
+and K¨oppen climate types. The error bars are computed for classes with more than one site presenting them. NEE VUT USTAR50 QC=1.
+2 km×2 km tower window via Google Earth Engine (Gore-
+lick et al. 2017). Meteorological predictors are from ERA5-
+Land (Mu˜noz-Sabater et al. 2021) at 0.1° resolution. All in-
+puts are harmonized to daily resolution with a 45-day se-
+quence window and 15-day stride.
+Loss Function
+We use a composite loss enforcing data quality, class bal-
+ance, and physical consistency:
+L= MSE·w qc ·w igbp ·w koppen +α·L flux, α= 0.1
+wherew qc weights samples by their continuous NEE quality
+flag,w igbp andw koppen are inverse-frequency class weights
+countering spatial imbalance across ecosystem and climate
+types, andL flux penalizes violations ofNEE = RECO−
+GPP. GPP and RECO are clipped to non-negative values at
+inference.
+Task-Aware Modulation using Representation
+Learning
+We leverage the TAM-RL framework (Fig. 2). The architec-
+ture consists of two main components:
+•Modulation network:Composed of a BiLSTM-based
+task encoderEand a modulation parameter generatorG.
+The encoder captures temporal information and learns
+task-specific embeddingsz i representing the characteris-
+tics of each entity (site). These embeddings are then used
+by the MLP-based generatorGto produce modulation
+parameters.
+•Forward modelF:A standard LSTM decoder used for
+conditional g
+--- Page 4 ---
+Figure 4:Relative RMSE heatmap of XGBoost, CT-LSTM, TAMLSTM, and TAM-RL derived in comparsion to FLUXCOM-X-BASE with
+NEE VUT USTAR50 QC=1.
+1.Pre-training:Only the decoder network is trained with-
+out using any task-specific information. By initializing
+the model with these pre-trained weights, the decoder is
+provided with a robust foundation that has shared knowl-
+edge across the distribution for subsequent task-specific
+adaptation.
+2.Joint training:For each task (carbon site), a small sup-
+port set is used to compute the task embedding. The mod-
+ulation network converts this embedding into parameters
+that adjust both the shared feature extractor and predic-
+tion head. A separate query set is passed to the adapted
+decoder, and gradients are backpropagated through both
+networks. This enables TAM-RL to learn how to modu-
+late representations for new tasks using only a few exam-
+ples, without test-time fine-tuning.
+During inference, historical data for each site (e.g., 2001,
+2011, 2021) serves as the support set to derive site context.
+The modulated base network then generates final predictions
+for each task.
+Results
+We evaluate our models against FLUXCOM-X-BASE as
+the state-of-the-art product, alongside three additional base-
+lines:
+•CT-LSTM: a standard LSTM augmented with one-hot
+encoded static features;
+•TAMLSTM: the decoder-only component of TAM-RL;
+•XGBoost: trained on flattened (non-temporal) feature
+vectors, configured with the same hyperparameters as
+FLUXCOM-X-BASE for m
+--- Page 5 ---
+Figure 5: Scatter plots of RMSE andR 2 of TAM-RL and FLUXCOM-X-BASE computed for every site and colored by the
+Koppen climate type.
+Table 1:Model performance comparison across targets. Met-
+rics are averaged across all sites. NEE VUT USTAR50 QC=1 and
+NEE VUT REF QC=1.
+Model GPP NEE
+RMSER 2 RMSER 2
+CT-LSTM 2.03 0.42 1.67 0.21
+TAMLSTM 2.04 0.40 1.63 0.21
+TAM-RL 1.97 0.43 1.62 0.23
+XGBoost 2.17 0.34 1.76 0.16
+FLUXCOM-X-BASE 2.18 0.36 1.76 0.16
+gets: compared to FLUXCOM-X-BASE, our framework re-
+duces RMSE by 9.6% for GPP and 8.0% for NEE, while
+improvingR 2 by 19.4% and 43.8%, respectively.
+Several limitations remain. All models, including the
+XGBoost baseline, underperform on water bodies (W AT),
+suggesting the current feature set lacks variables captur-
+ing aquatic processes. A moderate performance drop is
+also observed for mixed forests (MF), deciduous broadleaf
+forests (DBF), and evergreen needleleaf forests (ENF),
+where RMSE differences relative to FLUXCOM-X-BASE
+range from 0.4–6.0% depending on the target.
+More broadly, our analysis reveals substantial error vari-
+ability across IGBP and K ¨oppen–Geiger classes. While
+TAM-RL reduces this variance relative to baselines, spatial
+and climatic heterogeneity remain significant challenges for
+reliable global carbon flux upscaling.
+Conclusion
+We introduced TAM-RL, a task-aware representation learn-
+ing framework for zero-shot upscaling terrestrial carbon
+fluxes, trained with a knowledge-guided composite loss.
+Across all experimen
+--- Page 6 ---
+Cai, S.; Wang, Z.; Wang, S.; Perdikaris, P.; and Karni-
+adakis, G. E. 2021. Physics-informed neural networks for
+heat transfer problems.Journal of Heat Transfer, 143(6):
+060801.
+Chen, T.; and Guestrin, C. 2016. Xgboost: A scalable tree
+boosting system. InProceedings of the 22nd acm sigkdd
+international conference on knowledge discovery and data
+mining, 785–794.
+Cui, D.; Liang, S.; Wang, D.; and Liu, Z. 2021. A 1 km
+global dataset of historical (1979–2013) and future (2020–
+2100) K¨oppen–Geiger climate classification and bioclimatic
+variables.Earth System Science Data, 13(11): 5087–5114.
+Fan, B.; Zhang, H. K.; Li, Z. B.; Xiao, J.; Che, X.; Liu, Z.;
+Camps-Valls, G.; and Chen, J. M. 2025. Estimating carbon
+fluxes over North America using a physics-constrained deep
+learning model.ISPRS Journal of Photogrammetry and Re-
+mote Sensing, 227: 551–569.
+Friedl, M. A.; and Sulla-Menashe, D. 2019. MCD12Q1
+MODIS/Terra+Aqua Land Cover Type Yearly L3 Global
+500 m SIN Grid V006.
+Gorelick, N.; Hancher, M.; Dixon, M.; Ilyushchenko, S.;
+Thau, D.; and Moore, R. 2017. Google Earth Engine:
+Planetary-scale geospatial analysis for everyone.Remote
+sensing of Environment, 202: 18–27.
+Ji, W.; and Deng, S. 2021. Autonomous discovery of un-
+known reaction pathways from data by chemical reaction
+neural network.The Journal of Physical Chemistry A,
+125(4): 1082–1092.
+Jung, M.; Schwalm, C.; Migliavacca, M.; Walther, S.;
+Camps-Valls, G.; Koirala, S.; Anthoni, P.; Besnard, S.;
+Bodesheim, P.; Carvalhais, N.; et 
