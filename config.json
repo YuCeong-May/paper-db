@@ -1,0 +1,13 @@
+{
+  "domains": [
+    "cs.AI",
+    "cs.LG", 
+    "cs.CL",
+    "cs.CV",
+    "cs.RO",
+    "eess.AS",
+    "cs.SD"
+  ],
+  "max_papers": 20,
+  "arxiv_api": "http://export.arxiv.org/api/query"
+}

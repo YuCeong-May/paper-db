@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Papers Daily | 每日AI论文</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .subtitle { color: #888; font-size: 1rem; }
+        
+        /* Filters */
+        .filters {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .filter-group label { font-weight: 600; color: #aaa; }
+        select, input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #1e1e3f;
+            color: #fff;
+            font-size: 14px;
+        }
+        select:focus, input:focus { outline: 2px solid #4f46e5; }
+        
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: #888;
+        }
+        .stat { padding: 5px 10px; background: rgba(255,255,255,0.05); border-radius: 6px; }
+        
+        /* Paper Grid */
+        .papers-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        /* Paper Card */
+        .paper-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .paper-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border-color: #4f46e5;
+        }
+        
+        .paper-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .paper-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .paper-title a:hover { color: #4f46e5; }
+        
+        .paper-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        .paper-meta span { display: flex; align-items: center; gap: 5px; }
+        
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            background: #4f46e5;
+        }
+        .tag.cs-AI { background: #10b981; }
+        .tag.cs-LG { background: #3b82f6; }
+        .tag.cs-CL { background: #8b5cf6; }
+        .tag.cs-CV { background: #f59e0b; }
+        .tag.eess-AS { background: #ec4899; }
+        .tag.cs-SD { background: #06b6d4; }
+        .tag.cs-RO { background: #f97316; }
+        
+        .paper-abstract {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .paper-abstract::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, rgba(26,26,46,1));
+        }
+        
+        .paper-links {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .paper-links a {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .paper-links .pdf {
+            background: #dc2626;
+            color: #fff;
+        }
+        .paper-links .pdf:hover { background: #b91c1c; }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        
+        /* Date Badge */
+        .date-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(79, 70, 229, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #a5b4fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 AI Papers Daily</h1>
+            <p class="subtitle">每日 AI 领域最新论文精选</p>
+        </header>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label>领域:</label>
+                <select id="categoryFilter">
+                    <option value="">全部领域</option>
+                    <option value="cs.AI">cs.AI (人工智能)</option>
+                    <option value="cs.LG">cs.LG (机器学习)</option>
+                    <option value="cs.CL">cs.CL (计算语言学)</option>
+                    <option value="cs.CV">cs.CV (计算机视觉)</option>
+                    <option value="cs.RO">cs.RO (机器人)</option>
+                    <option value="eess.AS">eess.AS (语音)</option>
+                    <option value="cs.SD">cs.SD (语音处理)</option>
+                </select>
+                
+                <label>作者:</label>
+                <input type="text" id="authorFilter" placeholder="搜索作者...">
+                
+                <label>日期:</label>
+                <input type="date" id="dateFilter">
+                
+                <label>关键词:</label>
+                <input type="text" id="keywordFilter" placeholder="搜索标题/摘要...">
+            </div>
+        </div>
+        
+        <div class="stats">
+            <span class="stat">📚 共 <strong id="totalCount">0</strong> 篇论文</span>
+            <span class="stat">📅 更新日期: <strong id="updateDate">-</strong></span>
+        </div>
+        
+        <div id="papersGrid" class="papers-grid">
+            <div class="loading">加载中...</div>
+        </div>
+    </div>
+
+    <script>
+        // 论文数据将从 GitHub JSON 文件加载
+        const DATA_URL = 'data/papers.json';
+        
+        let allPapers = [];
+        
+        async function loadPapers() {
+            try {
+                const response = await fetch(DATA_URL);
+                const data = await response.json();
+                allPapers = data.papers || [];
+                document.getElementById('updateDate').textContent = data.updated || '-';
+                document.getElementById('totalCount').textContent = allPapers.length;
+                renderPapers(allPapers);
+            } catch (error) {
+                document.getElementById('papersGrid').innerHTML = 
+                    '<div class="loading">加载失败: ' + error.message + '</div>';
+            }
+        }
+        
+        function renderPapers(papers) {
+            const grid = document.getElementById('papersGrid');
+            
+            if (papers.length === 0) {
+                grid.innerHTML = '<div class="loading">没有找到匹配的论文</div>';
+                return;
+            }
+            
+            grid.innerHTML = papers.map((paper, i) => {
+                const categories = paper.categories || [];
+                const tagsHtml = categories.map(cat => 
+                    `<span class="tag ${cat.replace('.','-')}">${cat}</span>`
+                ).join('');
+                
+                const authors = (paper.authors || []).slice(0, 4).join(', ');
+                const date = paper.published ? paper.published.substring(0, 10) : '';
+                
+                return `
+                    <div class="paper-card">
+                        <h2 class="paper-title">
+                            <a href="${paper.url}" target="_blank">${paper.title}</a>
+                        </h2>
+                        <div class="paper-meta">
+                            <span>👤 ${authors}${((paper.authors||[]).length > 4) ? '...' : ''}</span>
+                            <span>📅 ${date}</span>
+                        </div>
+                        <div class="paper-meta">
+                            ${tagsHtml}
+                        </div>
+                        <p class="paper-abstract">${paper.abstract || ''}</p>
+                        <div class="paper-links">
+                            <a href="${paper.pdf}" class="pdf" target="_blank">📥 PDF</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function filterPapers() {
+            const category = document.getElementById('categoryFilter').value;
+            const author = document.getElementById('authorFilter').value.toLowerCase();
+            const date = document.getElementById('dateFilter').value;
+            const keyword = document.getElementById('keywordFilter').value.toLowerCase();
+            
+            const filtered = allPapers.filter(paper => {
+                // Category filter
+                if (category && !(paper.categories || []).includes(category)) {
+                    return false;
+                }
+                
+                // Author filter
+                if (author && !(paper.authors || []).some(a => a.toLowerCase().includes(author))) {
+                    return false;
+                }
+                
+                // Date filter
+                if (date && !(paper.published || '').startsWith(date)) {
+                    return false;
+                }
+                
+                // Keyword filter
+                if (keyword) {
+                    const title = (paper.title || '').toLowerCase();
+                    const abstract = (paper.abstract || '').toLowerCase();
+                    if (!title.includes(keyword) && !abstract.includes(keyword)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            renderPapers(filtered);
+        }
+        
+        // Event listeners
+        document.getElementById('categoryFilter').addEventListener('change', filterPapers);
+        document.getElementById('authorFilter').addEventListener('input', filterPapers);
+        document.getElementById('dateFilter').addEventListener('change', filterPapers);
+        document.getElementById('keywordFilter').addEventListener('input', filterPapers);
+        
+        // Load on start
+        loadPapers();
+    </script>
+</body>
+</html>
