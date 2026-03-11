@@ -18,15 +18,7 @@
       ],
       "published": "2026-03-10",
       "url": "http://arxiv.org/abs/2603.09974v1",
-      "pdf": "https://arxiv.org/pdf/2603.09974v1",
-      "summary": {
-        "en": "This paper presents TAM-RL (Task-Aware Modulation with Representation Learning), a framework for upscaling terrestrial carbon fluxes. It addresses the challenge of sparse and regionally biased ground measurements.",
-        "zh": "本文提出了 TAM-RL（具有表征学习的任务感知调制），一个用于扩大陆地碳通量估算的框架。"
-      },
-      "method_overview": {
-        "en": "### Problem\nCarbon flux upscaling faces challenges due to sparse ground measurements and poor generalization.\n\n### Proposed Method\n- Task-aware modulation network with BiLSTM encoder\n- Knowledge-guided loss based on carbon balance equation (NEE = GPP - RECO)\n- Zero-shot domain generalization without fine-tuning\n\n### Results\n- RMSE reduction: 8-9.6%\n- R2 improvement: from 19.4% to 43.8%\n- Outperforms XGBoost, CT-LSTM baselines",
-        "zh": "### 问题\n碳通量扩大估算面临地面测量稀疏且泛化能力差的问题。\n\n### 提出的方法\n- 带有 BiLSTM 编码器的任务感知调制网络\n- 基于碳平衡方程的知识引导损失函数\n- 零样本域泛化，无需微调\n\n### 结果\n- RMSE 降低：8-9.6%\n- R2 提升：从 19.4% 到 43.8%\n- 优于 XGBoost、CT-LSTM 基线"
-      }
+      "pdf": "https://arxiv.org/pdf/2603.09974v1"
     },
     {
       "id": "2603.09972v1",
@@ -46,15 +38,7 @@
       ],
       "published": "2026-03-10",
       "url": "http://arxiv.org/abs/2603.09972v1",
-      "pdf": "https://arxiv.org/pdf/2603.09972v1",
-      "summary": {
-        "en": "This paper investigates how feature correlations shape superposition in neural networks. The authors introduce BOWS (Bag-of-Words Superposition) to study how correlated features are arranged in superposition.",
-        "zh": "本文研究了特征相关性如何塑造神经网络中的叠加。作者引入了 BOWS（词袋叠加）来研究相关特征如何在叠加中排列。"
-      },
-      "method_overview": {
-        "en": "### Problem\nHow do correlated features arrange themselves in neural network superposition?\n\n### Proposed Method\n- Bag-of-Words Superposition (BOWS) framework\n- Encode binary BoW representations of internet text\n- Study interference patterns between correlated features\n\n### Key Findings\n- When features are correlated, interference can be constructive\n- Features arrange according to co-activation patterns\n- Weight decay encourages efficient arrangement",
-        "zh": "### 问题\n相关特征如何在神经网络叠加中排列？\n\n### 提出的方法\n- 词袋叠加（BOWS）框架\n- 对互联网文本的二进制词袋表示进行编码\n- 研究相关特征之间的干扰模式\n\n### 关键发现\n- 当特征相关时，干扰可以是建设性的\n- 特征根据共激活模式排列\n- 权重衰减鼓励高效排列"
-      }
+      "pdf": "https://arxiv.org/pdf/2603.09972v1"
     },
     {
       "id": "2603.09970v1",
@@ -72,15 +56,7 @@
       ],
       "published": "2026-03-10",
       "url": "http://arxiv.org/abs/2603.09970v1",
-      "pdf": "https://arxiv.org/pdf/2603.09970v1",
-      "summary": {
-        "en": "This paper introduces CREATE, a benchmark for evaluating LLMs creative associative reasoning. The benchmark tests models ability to generate diverse, specific, and meaningful connections between real-world concepts.",
-        "zh": "本文介绍了 CREATE，一个用于评估大语言模型联想创造力的基准测试。该基准测试考察模型在现实世界概念之间生成多样化、特定且有意义的连接的能力。"
-      },
-      "method_overview": {
-        "en": "### Problem\nHow to evaluate creative associative reasoning in LLMs?\n\n### Proposed Method\n- Design queries requiring multi-hop reasoning about real-world entities\n- Evaluate on two dimensions: quality (specificity) and diversity\n- Use a creative utility metric combining quality and diversity\n- Test frontier models including GPT-5, Claude, Gemini, Qwen3\n\n### Key Findings\n- Strongest models achieve higher creative utility\n- Thinking models not always more effective despite high token budgets\n- Creative prompting gives limited additional improvement",
-        "zh": "### 问题\n如何评估大语言模型中的联想创造力？\n\n### 提出的方法\n- 设计需要对现实实体进行多跳推理的查询\n- 从两个维度评估：质量（特异性）和多样性\n- 使用结合质量和多样性的创意效用指标\n- 测试前沿模型包括 GPT-5、Claude、Gemini、Qwen3\n\n### 关键发现\n- 最强的模型获得更高的创意效用\n- 思考模型虽然有高 token 预算，但并不总是更有效\n- 创意提示仅提供有限的额外改进"
-      }
+      "pdf": "https://arxiv.org/pdf/2603.09970v1"
     },
     {
       "id": "2603.09968v1",

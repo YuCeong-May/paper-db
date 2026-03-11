@@ -13,7 +13,6 @@
             color: #e4e4e7;
         }
         
-        /* Header - Same as before */
         header {
             text-align: center;
             padding: 40px 0 25px;
@@ -30,7 +29,6 @@
         }
         .subtitle { color: #9ca3af; font-size: 1rem; }
         
-        /* Main Layout */
         .main-container {
             display: flex;
             gap: 0;
@@ -40,7 +38,6 @@
             padding: 0 20px 20px;
         }
         
-        /* Left Panel - Paper List */
         .left-panel {
             width: 45%;
             min-width: 400px;
@@ -50,7 +47,6 @@
             padding-right: 20px;
         }
         
-        /* Filters in Left Panel */
         .filters {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.08);
@@ -90,7 +86,6 @@
             border-color: #4f46e5;
         }
         
-        /* Paper List */
         .paper-list-container {
             flex: 1;
             overflow-y: auto;
@@ -104,10 +99,7 @@
             margin-bottom: 12px;
             padding: 0 4px;
         }
-        .paper-list-header span {
-            color: #9ca3af;
-            font-size: 0.9rem;
-        }
+        .paper-list-header span { color: #9ca3af; font-size: 0.9rem; }
         
         .paper-item {
             background: rgba(255,255,255,0.02);
@@ -180,7 +172,6 @@
             color: #6b7280;
         }
         
-        /* Right Panel - Detail View */
         .right-panel {
             flex: 1;
             display: flex;
@@ -198,27 +189,15 @@
             border-bottom: 1px solid rgba(255,255,255,0.08);
         }
         
-        .language-toggle {
-            display: flex;
-            gap: 8px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            padding: 4px;
-        }
-        
-        .lang-btn {
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             padding: 6px 14px;
-            border-radius: 6px;
-            border: none;
-            background: transparent;
-            color: #9ca3af;
-            cursor: pointer;
+            background: rgba(79,70,229,0.15);
+            border-radius: 20px;
             font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .lang-btn.active {
-            background: #4f46e5;
-            color: #fff;
+            color: #a5b4fc;
         }
         
         .detail-content {
@@ -236,13 +215,8 @@
             color: #6b7280;
             text-align: center;
         }
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
+        .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
         
-        /* Summary Sections */
         .detail-section {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.05);
@@ -257,25 +231,6 @@
             letter-spacing: 1px;
             color: #6b7280;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .section-title.summary {
-            color: #818cf8;
-        }
-        
-        .section-title.method {
-            color: #34d399;
-        }
-        
-        .section-title.model {
-            color: #f472b6;
-        }
-        
-        .section-title.results {
-            color: #fbbf24;
         }
         
         .detail-title {
@@ -302,101 +257,6 @@
             margin-bottom: 20px;
         }
         
-        .llm-summary {
-            background: linear-gradient(135deg, rgba(79,70,229,0.1) 0%, rgba(139,92,246,0.05) 100%);
-            border-left: 3px solid #4f46e5;
-        }
-        
-        .llm-summary-zh {
-            background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(6,182,212,0.05) 100%);
-            border-left: 3px solid #10b981;
-        }
-        
-        .summary-text {
-            color: #e4e4e7;
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-        
-        .method-overview {
-            background: linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(16,185,129,0.03) 100%);
-            border-left: 3px solid #34d399;
-        }
-        
-        .method-text {
-            color: #d1d5db;
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-        
-        .method-text h4 {
-            color: #34d399;
-            font-size: 0.95rem;
-            margin: 12px 0 6px;
-        }
-        
-        .method-text h4:first-child {
-            margin-top: 0;
-        }
-        
-        .method-text ul {
-            margin: 8px 0;
-            padding-left: 20px;
-        }
-        
-        .method-text li {
-            margin: 6px 0;
-            color: #d1d5db;
-        }
-        
-        /* Model Diagram Placeholder */
-        .model-diagram {
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            margin: 12px 0;
-        }
-        .model-diagram-icon {
-            font-size: 3rem;
-            margin-bottom: 12px;
-        }
-        .model-diagram-text {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-        
-        /* Results Table */
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 12px 0;
-            font-size: 0.85rem;
-        }
-        .results-table th,
-        .results-table td {
-            padding: 10px 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-        .results-table th {
-            background: rgba(255,255,255,0.05);
-            color: #9ca3af;
-            font-weight: 600;
-        }
-        .results-table td {
-            color: #d1d5db;
-        }
-        .results-table tr:hover td {
-            background: rgba(79,70,229,0.05);
-        }
-        
-        .result-highlight {
-            color: #34d399;
-            font-weight: 600;
-        }
-        
-        /* PDF Link */
         .pdf-link {
             display: inline-flex;
             align-items: center;
@@ -414,7 +274,6 @@
             box-shadow: 0 8px 20px rgba(220,38,38,0.3);
         }
         
-        /* Loading */
         .loading {
             display: flex;
             flex-direction: column;
@@ -434,40 +293,18 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.02);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(79,70,229,0.3);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(79,70,229,0.5);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar-thumb { background: rgba(79,70,229,0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(79,70,229,0.5); }
         
-        /* Responsive */
         @media (max-width: 900px) {
-            .main-container {
-                flex-direction: column;
-                height: auto;
-            }
-            .left-panel {
-                width: 100%;
-                min-width: unset;
-                border-right: none;
-                border-bottom: 1px solid rgba(255,255,255,0.08);
-                padding-right: 0;
-                padding-bottom: 20px;
-                max-height: 50vh;
-            }
-            .right-panel {
-                padding-left: 0;
-                padding-top: 20px;
-            }
+            .main-container { flex-direction: column; height: auto; }
+            .left-panel { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); padding-right: 0; padding-bottom: 20px; max-height: 50vh; }
+            .right-panel { padding-left: 0; padding-top: 20px; }
+            h1 { font-size: 2rem; }
+            .filter-row { flex-direction: column; align-items: stretch; }
+            select, input { width: 100%; }
         }
     </style>
 </head>
@@ -478,7 +315,6 @@
     </header>
     
     <div class="main-container">
-        <!-- Left Panel: Paper List -->
         <div class="left-panel">
             <div class="filters">
                 <div class="filter-row">
@@ -506,21 +342,14 @@
                     <span id="paperCount">加载中...</span>
                 </div>
                 <div id="paperList">
-                    <div class="loading">
-                        <div class="loading-spinner"></div>
-                    </div>
+                    <div class="loading"><div class="loading-spinner"></div></div>
                 </div>
             </div>
         </div>
         
-        <!-- Right Panel: Detail View -->
         <div class="right-panel">
             <div class="right-panel-header">
                 <div class="date-badge" id="updateDate"></div>
-                <div class="language-toggle">
-                    <button class="lang-btn active" data-lang="en">EN</button>
-                    <button class="lang-btn" data-lang="zh">中文</button>
-                </div>
             </div>
             
             <div class="detail-content" id="detailContent">
@@ -536,31 +365,6 @@
         const DATA_URL = 'data/papers.json';
         let allPapers = [];
         let selectedPaper = null;
-        let currentLang = 'en';
-        
-        // Mock data - will be replaced by actual summary from JSON
-        let paperSummary = null;
-        let paperMethod = null;
-        
-        function getSummaryForPaper(paper, lang) {
-            if (paper.summary && paper.summary[lang]) {
-                return paper.summary[lang];
-            }
-            if (paper.summary && paper.summary['en']) {
-                return paper.summary['en'];
-            }
-            return paper.abstract?.substring(0, 400) + '...';
-        }
-        
-        function getMethodForPaper(paper, lang) {
-            if (paper.method_overview && paper.method_overview[lang]) {
-                return paper.method_overview[lang];
-            }
-            if (paper.method_overview && paper.method_overview['en']) {
-                return paper.method_overview['en'];
-            }
-            return 'Click PDF to read full paper for method details.';
-        }
         
         async function loadPapers() {
             try {
@@ -603,7 +407,6 @@
         }
         
         function selectPaper(idx) {
-            // Update active state
             document.querySelectorAll('.paper-item').forEach(item => item.classList.remove('active'));
             document.querySelector(`.paper-item[data-idx="${idx}"]`).classList.add('active');
             
@@ -617,10 +420,6 @@
             const detailContent = document.getElementById('detailContent');
             const p = selectedPaper;
             
-            // Get summary and method from paper data
-            const summary = getSummaryForPaper(p, currentLang);
-            const method = getMethodForPaper(p, currentLang);
-            
             detailContent.innerHTML = `
                 <div class="detail-section">
                     <h2 class="detail-title">${p.title || 'Untitled'}</h2>
@@ -633,77 +432,8 @@
                 </div>
                 
                 <div class="detail-section">
-                    <div class="section-title">📝 ${currentLang === 'zh' ? '摘要' : 'Abstract'}</div>
+                    <div class="section-title">📝 Abstract</div>
                     <p class="detail-abstract">${p.abstract || ''}</p>
-                </div>
-                
-                <div class="detail-section llm-summary ${currentLang === 'zh' ? 'llm-summary-zh' : ''}">
-                    <div class="section-title summary">
-                        🤖 ${currentLang === 'zh' ? '智能总结' : 'Summary'}
-                    </div>
-                    <p class="summary-text">${summary}</p>
-                </div>
-                
-                <div class="detail-section method-overview">
-                    <div class="section-title method">
-                        💡 ${currentLang === 'zh' ? '方法概述' : 'Method Overview'}
-                    </div>
-                    <div class="method-text">${method.replace(/### /g, '<h4>').replace(/\n/g, '<br>').replace(/<h4>/g, '<h4>').replace(/<br>/g, '<br>')}</div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="section-title model">
-                        🏗️ ${currentLang === 'zh' ? '模型架构' : 'Model Architecture'}
-                    </div>
-                    <div class="model-diagram">
-                        <div class="model-diagram-icon">🔄</div>
-                        <div class="model-diagram-text">
-                            ${currentLang === 'zh' 
-                                ? '模型架构图需要从论文PDF中提取，点击PDF查看完整内容' 
-                                : 'Model diagram needs to be extracted from PDF. Click PDF to view full content.'}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="section-title results">
-                        📊 ${currentLang === 'zh' ? '实验结果' : 'Experimental Results'}
-                    </div>
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>${currentLang === 'zh' ? '方法' : 'Method'}</th>
-                                <th>${currentLang === 'zh' ? '数据集' : 'Dataset'}</th>
-                                <th>${currentLang === 'zh' ? '指标' : 'Metric'}</th>
-                                <th>${currentLang === 'zh' ? '结果' : 'Score'}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>${currentLang === 'zh' ? '本文方法' : 'Ours'}</td>
-                                <td>${currentLang === 'zh' ? '基准数据集' : 'Benchmark'}</td>
-                                <td>Accuracy</td>
-                                <td class="result-highlight">95.2%</td>
-                            </tr>
-                            <tr>
-                                <td>Baseline</td>
-                                <td>${currentLang === 'zh' ? '基准数据集' : 'Benchmark'}</td>
-                                <td>Accuracy</td>
-                                <td>89.1%</td>
-                            </tr>
-                            <tr>
-                                <td>SOTA</td>
-                                <td>${currentLang === 'zh' ? '基准数据集' : 'Benchmark'}</td>
-                                <td>Accuracy</td>
-                                <td>93.8%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p style="color: #6b7280; font-size: 0.85rem; margin-top: 12px;">
-                        ${currentLang === 'zh' 
-                            ? '💡 详细结果请查看论文PDF' 
-                            : '💡 Check the PDF for detailed results'}
-                    </p>
                 </div>
             `;
         }
@@ -713,9 +443,7 @@
             const keyword = document.getElementById('keywordFilter').value.toLowerCase();
             
             const filtered = allPapers.filter(paper => {
-                if (category && !(paper.categories || []).includes(category)) {
-                    return false;
-                }
+                if (category && !(paper.categories || []).includes(category)) return false;
                 if (keyword) {
                     const title = (paper.title || '').toLowerCase();
                     const abstract = (paper.abstract || '').toLowerCase();
@@ -728,21 +456,9 @@
             document.getElementById('paperCount').textContent = `${filtered.length} 篇论文`;
         }
         
-        // Event listeners
         document.getElementById('categoryFilter').addEventListener('change', filterPapers);
         document.getElementById('keywordFilter').addEventListener('input', filterPapers);
         
-        // Language toggle
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentLang = btn.dataset.lang;
-                if (selectedPaper) renderDetail();
-            });
-        });
-        
-        // Load on start
         loadPapers();
     </script>
 </body>
